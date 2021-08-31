@@ -24,9 +24,11 @@
       "mongodb": "3.5.7",
       "mongoose": "^6.0.3",
       "reflect-metadata": "^0.1.10",
-      "typeorm": "0.2.34"
+      "typeorm": "0.2.34",
+      "ts-node": "3.3.0"
    },
    "scripts": {
-      "start": "nodemon --exec ts-node --unhandled-rejections=strict src/index.ts "
+      "start": "nodemon --exec ts-node --unhandled-rejections=strict src/index.ts ",
+      "dev-start": "ts-node --transpile-only src/index.ts "
    }
 }
