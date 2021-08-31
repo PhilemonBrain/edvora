@@ -25,7 +25,8 @@
       "mongoose": "^6.0.3",
       "reflect-metadata": "^0.1.10",
       "typeorm": "0.2.34",
-      "ts-node": "3.3.0"
+      "ts-node": "3.3.0",
+      "typescript": "3.3.3333"
    },
    "scripts": {
       "start": "nodemon --exec ts-node --unhandled-rejections=strict src/index.ts ",
