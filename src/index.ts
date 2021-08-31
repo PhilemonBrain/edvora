@@ -36,11 +36,14 @@ import { User } from "./entity/User";
       })
     );
 
-    app.get("/", async (req, res) => {
+    const v1Route = express.Router();
+    app.use('/api/v1', v1Route);
+
+    v1Route.get("/", async (req, res) => {
       res.send(`cookie object`);
     });
 
-    app.post("/register", async (req, res) => {
+    v1Route.post("/register", async (req, res) => {
       try {
         const { email, password } = req.body;
         const user = await getConnection()
@@ -59,7 +62,7 @@ import { User } from "./entity/User";
       }
     });
 
-    app.post("/change_password", async (req, res) => {
+    v1Route.post("/change_password", async (req, res) => {
       try {
         const con = await getConnection().getMongoRepository(User);
         // if (!req.session || !req.session.userID)
@@ -95,7 +98,7 @@ import { User } from "./entity/User";
       }
     });
 
-    app.post("/terminate", (req, res) => {
+    v1Route.post("/terminate", (req, res) => {
       try {
         //In a client-server scenario, the req.session and req.session.userID will be a part of the request and wil be used to auth the user
         // if (!req.session || !req.session.userID)
@@ -115,7 +118,7 @@ import { User } from "./entity/User";
       }
     });
 
-    app.post("/login", async (req, res) => {
+    v1Route.post("/login", async (req, res) => {
       try {
         //In a client-server scenario, the req.session and req.session.userID will be a part of the request, return early
         // if (!req.session || !req.session.userID)
