@@ -10,23 +10,27 @@ import { User } from "./entity/User";
 (async () => {
   try {
     console.log("Connecting");
-    await createConnection();
+    await createConnection().catch((e) => console.log(e));
     const app = express();
+    app.disable('x-powered-by')
+    // app.set('trust proxy', 1)
     app.use(express.json());
 
     let mgStore = MongoStore.create({
-      mongoUrl:
-        "mongodb+srv://philemonBrain:c6ariWana9RftT5c@mycluster.vuxlq.mongodb.net/testDb?retryWrites=true&w=majority",
+      mongoUrl: process.env.TYPEORM_URL,
+        // "mongodb+srv://philemonBrain:c6ariWana9RftT5c@mycluster.vuxlq.mongodb.net/testDb?retryWrites=true&w=majority",
     });
 
     app.use(
       session({
+        name:"Edvora_Session",
         secret: "wfif98493ufu4f4928",
         resave: false,
         saveUninitialized: true,
         cookie: {
           secure: true,
           maxAge: 1200000,
+          httpOnly: true
         },
         store: mgStore,
       })
@@ -62,7 +66,6 @@ import { User } from "./entity/User";
         //   return res.status(400).json({ error: "Login Required" });
         const { email, oldpassword, newPassword } = req.body;
         const user = await con.findOne({email});
-        console.log(user)
         if (!user) return res.status(204).json({ error: "Invalid User" });
 
         let isCorrectPassword = await bcryptjs.compare(
@@ -80,14 +83,10 @@ import { User } from "./entity/User";
           .filter((id) => id != req.sessionID)
           .forEach((id) => {
             console.log(`destroying id ${id}`);
-            mgStore.destroy(id);
           });
 
-        // await con.findOneAndUpdate(user, {sessionIds: [req.sessionID]});
         user.sessionIds = [req.sessionID]
         user.save()
-        // await User.update(user, { sessionIds: [req.sessionID] });
-        console.log(user.sessionIds.length);
 
         return res.status(200).json({ message: "Password Change Successful" });
       } catch (error) {
@@ -118,6 +117,9 @@ import { User } from "./entity/User";
 
     app.post("/login", async (req, res) => {
       try {
+        //In a client-server scenario, the req.session and req.session.userID will be a part of the request, return early
+        // if (!req.session || !req.session.userID)
+        //   return res.status(200).json({ error: "You are already Logged In" });
         const { email: reqEmail, password: reqPassword } = req.body;
         const user = await User.findOne({ email: reqEmail });
 
