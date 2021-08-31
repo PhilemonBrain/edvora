@@ -29,6 +29,6 @@
    },
    "scripts": {
       "start": "nodemon --exec ts-node --unhandled-rejections=strict src/index.ts ",
-      "dev-start": "ts-node --transpile-only src/index.ts "
+      "dev-start": "ts-node src/index.ts "
    }
 }
