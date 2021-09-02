@@ -5,10 +5,7 @@ import { signupLoginValidation } from "./validator";
 import bcryptjs from "bcryptjs";
 
 (async () => {
-  const { app, mgStore } = await createServer();
-
-  const v1Route = express.Router();
-  app.use("/api/v1", v1Route);
+  const { app, mgStore, v1Route} = await createServer();
 
   v1Route.get("/", async (req, res) => {
     res.send(`Welcome to the `);
@@ -36,8 +33,7 @@ import bcryptjs from "bcryptjs";
   v1Route.post("/change_password", async (req, res) => {
     try {
       //In a client-server scenario, the req.session and req.session.userID will be a part of the request and wil be used to auth the user
-      // if (!req.session || !req.session.userID)
-      //   return res.status(400).json({ error: "Login Required" });
+      // An AuthHandler function exists in the validators file to this respect
 
       const { email, oldpassword, newPassword } = req.body;
       const user = await User.findOne({ email });
@@ -73,16 +69,19 @@ import bcryptjs from "bcryptjs";
   v1Route.post("/terminate", (req, res) => {
     try {
       //In a client-server scenario, the req.session and req.session.userID will be a part of the request and wil be used to auth the user
-      // if (!req.session || !req.session.userID)
-      //   return res.status(400).json({ error: "Login Required" });
+      // An AuthHandler function exists in the validators file to this respect
 
       //destroy the sessionID
       const sessionId = req.body.sessionID;
-      mgStore.destroy(sessionId);
-
-      return res
-        .status(200)
-        .json({ message: "Sessino has been terminated successfully" });
+      mgStore.get(sessionId, async (err, session) => {
+        if(session == null || err ){
+          return res.status(401).json({ message : "Invalid Session"})
+        }
+        mgStore.destroy(sessionId);
+        return res
+          .status(200)
+          .json({ message: "Sessino has been terminated successfully" });
+      })
     } catch (error) {
       return res
         .status(500)
@@ -93,8 +92,8 @@ import bcryptjs from "bcryptjs";
   v1Route.post("/login", signupLoginValidation(), async (req, res) => {
     try {
       //In a client-server scenario, the req.session and req.session.userID will be a part of the request, return early
-      // if (!req.session || !req.session.userID)
-      //   return res.status(200).json({ error: "You are already Logged In" });
+      // An AuthHandler function exists in the validators file to this respect
+
       const { email: reqEmail, password: reqPassword } = req.body;
       const user = await User.findOne({ email: reqEmail });
 
@@ -118,6 +117,21 @@ import bcryptjs from "bcryptjs";
       });
     } catch (error) {
       return res.status(500).json();
+    }
+  });
+
+  v1Route.get("/logout", (req, res) => {
+    try {
+      req.session.destroy((err) => {
+        if(err) return res.status(400).json({ message: "Error Logging Out"})
+      })
+      return res
+        .status(200)
+        .json({ message: "Logout Successful" });
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ error: "Erroe while terminating the session Id" });
     }
   });
 

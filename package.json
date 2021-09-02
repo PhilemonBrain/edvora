@@ -13,8 +13,8 @@
       "jest": "^27.1.0",
       "nodemon": "^2.0.12",
       "supertest": "^6.1.6",
-      "ts-node": "3.3.0",
-      "typescript": "3.3.3333"
+      "ts-jest": "^27.0.5",
+      "ts-node": "3.3.0"
    },
    "dependencies": {
       "bcryptjs": "^2.4.3",
@@ -25,11 +25,10 @@
       "express-session": "^1.17.2",
       "joi": "^17.4.2",
       "mongodb": "3.5.7",
-      "mongoose": "^6.0.3",
       "reflect-metadata": "^0.1.10",
       "ts-node": "3.3.0",
       "typeorm": "0.2.34",
-      "typescript": "3.3.3333"
+      "typescript": "4.4.2"
    },
    "scripts": {
       "start": "nodemon --exec ts-node --unhandled-rejections=strict src/server.ts ",

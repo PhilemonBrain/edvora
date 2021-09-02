@@ -33,7 +33,10 @@ export const createServer = async () => {
       })
     );
 
-    return {app, mgStore};
+    const v1Route = express.Router();
+    app.use("/api/v1", v1Route);
+
+    return {app, mgStore, v1Route};
   } catch (error) {
     console.error(error);
   }
