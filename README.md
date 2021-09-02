@@ -8,6 +8,9 @@ Steps to run this project:
 Project Structure
 This project was written with Node(Express), Typescript, TypeORM, Joi(for validation), express-session.
 Has 4 endpoints
+
+All endpoints at route https://edvora-backend-2021.herokuapp.com/api/v1
+
 1. /register: takes an email and password values in d request body. If the email already exists, returns a response or creates the user otherwise.
 
 2. /login: takes and email and password values in the request body. If the email isnt registered, or incorrect, returns a response or logs the user in otherwise. Here the current user sessionID is addded to an array of user sessionID in the User document, and the userID is added to the request.session. We can then check if there is a session and session.userID properties on the request object in authentication required endpoints like change_password. 
