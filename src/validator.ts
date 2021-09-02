@@ -1,5 +1,15 @@
 import Joi from "joi";
 
+export const authHandler = () => (req, res, next) => {
+  try {
+    if(! req.session || !req.session.userID) return res.status(400).json({ error: "Unauthorized User"});
+    next();
+  } catch (error) {
+    next(error);
+  }
+}
+
+
 export const signupLoginValidation = () => (req, res, next) => {
   const schema = Joi.object({
     email: Joi.string().email().required(),
